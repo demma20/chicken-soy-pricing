@@ -120,6 +120,7 @@ function updateChart() {
                     }
                 },
                 y: {
+                    beginAtZero: true,  // Start at 0
                     title: {
                         display: true,
                         text: 'Price (USD/kg)',
@@ -141,6 +142,7 @@ function updateChart() {
                     }
                 },
                 yInr: {
+                    beginAtZero: true,  // Start at 0
                     position: 'right',
                     title: {
                         display: true,
@@ -153,11 +155,16 @@ function updateChart() {
                     grid: {
                         display: false
                     },
+                    // Mirror the USD axis
+                    min: 0,
+                    max: function(context) {
+                        // Get the max from the USD axis and convert
+                        const usdMax = context.chart.scales.y.max;
+                        return usdMax * 87.82;
+                    },
                     ticks: {
                         callback: function(value) {
-                            // Convert USD to INR (approximate based on your data)
-                            const inrValue = value * 87.82;
-                            return '₹' + inrValue.toFixed(0);
+                            return '₹' + value.toFixed(0);
                         },
                         font: {
                             size: 12
