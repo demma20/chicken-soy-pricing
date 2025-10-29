@@ -65,7 +65,8 @@ function updateChart() {
     
     // Create datasets
     const datasets = Object.values(grouped).map(series => {
-        const isThigh = series.productForm.toLowerCase().includes('thigh');
+        const isThigh = series.productForm.toLowerCase().includes('thigh') || 
+                series.productForm.toLowerCase().includes('legs');
         
         return {
             label: `${series.country} • ${series.productForm}`,
