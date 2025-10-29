@@ -181,8 +181,10 @@ function updateChart() {
                         font: {
                             size: 12
                         },
-                        boxWidth: 40,  // Makes the line segment longer
-                        boxHeight: 3   // Makes it look like a line
+                        boxWidth: 40,
+                        boxHeight: 2,      // Changed from 3 to 2
+                        useBorderRadius: false,
+                        borderRadius: 0
                     }
                 },
                 tooltip: {
