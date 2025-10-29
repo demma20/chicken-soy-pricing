@@ -24,7 +24,12 @@ async function loadData() {
 
 // Update chart based on selected commodity
 function updateChart() {
-    const filtered = allData.filter(d => d.commodity === currentCommodity);
+    const filtered = allData.filter(d => {
+        if (currentCommodity === 'chicken') {
+            return d.commodity.toLowerCase().includes('chicken');
+        }
+        return d.commodity === currentCommodity;
+    });
     console.log(`Filtered to ${filtered.length} ${currentCommodity} records`);
     
     // Group by country and product form
