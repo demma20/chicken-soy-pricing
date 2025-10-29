@@ -170,11 +170,12 @@ function updateChart() {
                     display: true,
                     position: 'bottom',
                     labels: {
-                        usePointStyle: true,
                         padding: 15,
                         font: {
                             size: 12
-                        }
+                        },
+                        boxWidth: 40,  // Makes the line segment longer
+                        boxHeight: 3   // Makes it look like a line
                     }
                 },
                 tooltip: {
