@@ -65,8 +65,9 @@ function updateChart() {
     
     // Create datasets
     const datasets = Object.values(grouped).map(series => {
-        const isThigh = series.productForm.toLowerCase().includes('thigh') || 
-                series.productForm.toLowerCase().includes('legs');
+        const isDotted = series.productForm.toLowerCase().includes('thigh') || 
+                 series.productForm.toLowerCase().includes('legs') ||
+                 series.productForm.toLowerCase().includes('meal');
         
         return {
             label: `${series.country} • ${series.productForm}`,
@@ -74,7 +75,7 @@ function updateChart() {
             borderColor: COUNTRY_COLORS[series.country] || 'rgb(107, 114, 128)',
             backgroundColor: 'transparent',
             borderWidth: 2.5,
-            borderDash: isThigh ? [5, 5] : [],  // Dotted for thighs, solid for others
+            borderDash: isDotted ? [5, 5] : [],  // Dotted for thighs + meal, solid for others
             pointRadius: 0,
             pointHoverRadius: 5,
             tension: 0.1
