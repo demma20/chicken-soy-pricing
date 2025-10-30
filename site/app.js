@@ -180,7 +180,7 @@ function updateChart() {
                     labels: {
                         padding: 17,
                         font: {
-                            size: 15
+                            size: 18
                         },
                         boxWidth: 40,
                         boxHeight: 2,      // Changed from 3 to 2
