@@ -178,7 +178,7 @@ function updateChart() {
                     display: true,
                     position: 'bottom',
                     labels: {
-                        padding: 15,
+                        padding: 17,
                         font: {
                             size: 15
                         },
