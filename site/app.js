@@ -24,15 +24,20 @@ async function loadData() {
 
 // Update chart based on selected commodity
 function updateChart() {
-    const filtered = allData.filter(d => {
-        if (currentCommodity === 'chicken') {
-            return d.commodity.toLowerCase().includes('chicken');
-        }
-        return d.commodity === currentCommodity;
-    });
+    let filtered;
+    
+    if (currentCommodity === 'all') {
+        // Show everything
+        filtered = allData;
+    } else if (currentCommodity === 'chicken') {
+        filtered = allData.filter(d => d.commodity.toLowerCase().includes('chicken'));
+    } else {
+        filtered = allData.filter(d => d.commodity === currentCommodity);
+    }
+    
     console.log(`Filtered to ${filtered.length} ${currentCommodity} records`);
     
-    // Group by country and product form
+    // Group by country, commodity, and product form
     const grouped = {};
     
     filtered.forEach(record => {
@@ -40,12 +45,16 @@ function updateChart() {
         if (!record.usd_per_kg || !record.date) return;
         
         const country = record.country;
+        const commodity = record.commodity;
         const productForm = record.product_form || 'unknown';
-        const key = `${country}|${productForm}`;
+        
+        // Create a unique key for each series
+        const key = `${country}|${commodity}|${productForm}`;
         
         if (!grouped[key]) {
             grouped[key] = {
                 country: country,
+                commodity: commodity,
                 productForm: productForm,
                 data: []
             };
@@ -66,16 +75,26 @@ function updateChart() {
     // Create datasets
     const datasets = Object.values(grouped).map(series => {
         const isDotted = series.productForm.toLowerCase().includes('thigh') || 
-                 series.productForm.toLowerCase().includes('legs') ||
-                 series.productForm.toLowerCase().includes('meal');
+                         series.productForm.toLowerCase().includes('legs') ||
+                         series.productForm.toLowerCase().includes('meal');
+        
+        // Create label based on what we're showing
+        let label;
+        if (currentCommodity === 'all') {
+            // Show commodity + country + form
+            label = `${series.commodity} • ${series.country} • ${series.productForm}`;
+        } else {
+            // Just show country + form (commodity is already filtered)
+            label = `${series.country} • ${series.productForm}`;
+        }
         
         return {
-            label: `${series.country} • ${series.productForm}`,
+            label: label,
             data: series.data,
             borderColor: COUNTRY_COLORS[series.country] || 'rgb(107, 114, 128)',
             backgroundColor: 'transparent',
             borderWidth: 2.5,
-            borderDash: isDotted ? [5, 5] : [],  // Dotted for thighs + meal, solid for others
+            borderDash: isDotted ? [5, 5] : [],
             pointRadius: 0,
             pointHoverRadius: 5,
             tension: 0.1
@@ -121,7 +140,7 @@ function updateChart() {
                     }
                 },
                 y: {
-                    beginAtZero: true,  // Start at 0
+                    beginAtZero: true,
                     title: {
                         display: true,
                         text: 'Price (USD/kg)',
@@ -143,7 +162,7 @@ function updateChart() {
                     }
                 },
                 yInr: {
-                    beginAtZero: true,  // Start at 0
+                    beginAtZero: true,
                     position: 'right',
                     title: {
                         display: true,
@@ -156,10 +175,8 @@ function updateChart() {
                     grid: {
                         display: false
                     },
-                    // Mirror the USD axis
                     min: 0,
                     max: function(context) {
-                        // Get the max from the USD axis and convert
                         const usdMax = context.chart.scales.y.max;
                         return usdMax * 87.82;
                     },
@@ -178,12 +195,12 @@ function updateChart() {
                     display: true,
                     position: 'bottom',
                     labels: {
-                        padding: 17,
+                        padding: 15,
                         font: {
-                            size: 18
+                            size: 14
                         },
                         boxWidth: 40,
-                        boxHeight: 2,      // Changed from 3 to 2
+                        boxHeight: 2,
                         useBorderRadius: false,
                         borderRadius: 0
                     }
@@ -220,6 +237,14 @@ function updateChart() {
             }
         }
     });
+    
+    // Show/hide chicken note
+    const chickenNote = document.getElementById('chickenNote');
+    if (currentCommodity === 'chicken' || currentCommodity === 'all') {
+        chickenNote.style.display = 'block';
+    } else {
+        chickenNote.style.display = 'none';
+    }
 }
 
 // Commodity button handlers
